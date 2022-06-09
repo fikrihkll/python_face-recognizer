@@ -3,16 +3,21 @@ import cv2
 import face_recognition
 import pickle
 
-name=input("enter name :")
-ref_id=input("enter id :")
+ref_dictt = {}
 
 try:
     f=open("ref_name.pkl","rb")
 
     ref_dictt=pickle.load(f)
+    print(ref_dictt)
     f.close()
 except:
     ref_dictt={}
+
+name=input("enter name :")
+ref_id=input("enter id :")
+
+
 ref_dictt[ref_id]=name
 
 
