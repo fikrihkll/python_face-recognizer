@@ -1,5 +1,5 @@
 .DS_Store
 *.pkl
-unknown_detected_faces/
+unknown_detected_faces/*
 *.jpg
 *.png
