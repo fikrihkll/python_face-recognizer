@@ -7,6 +7,18 @@ import pickle
 import datetime
 from datetime import datetime
 import time
+import os
+import uuid
+
+def create_unknown_face_image_dir():
+    try:
+        directory = "unknown_detected_faces"    
+        path = os.path.join(os.getcwd(), directory) 
+            
+        os.mkdir(path) 
+        print("Directory '% s' created" % directory) 
+    except:
+        print("directory exist, ready to be executed")
 
 def start_saving_unknown_face():
     temp_detected_face_dictt.update(unknown_face_dictt)
@@ -21,8 +33,9 @@ def start_saving_unknown_face():
     print(known_unknown_id)
 
 def current_time():
-    return str(datetime.now().strftime("%d/%m/%Y%H:%M:%S"))
+    return str(datetime.now().strftime("%d-%m-%Y-%H-%M-%S-"+str(uuid.uuid4())))
 
+create_unknown_face_image_dir()
 
 ref_dictt = {}
 ref_unknown_dictt = {}
@@ -53,7 +66,7 @@ known_face_encodings = []
 known_face_id = []  
 known_unknown_id = {}
 
-def store_unknown_person(face_encoding):
+def store_unknown_person(face_encoding, frame):
     unknown_name = "? " + current_time()
 
     unknown_id = current_time()
@@ -62,6 +75,18 @@ def store_unknown_person(face_encoding):
     ref_dictt[unknown_id] = unknown_name
     known_unknown_id[unknown_id] = unknown_name
     temp_detected_face_dictt[unknown_id] = [face_encoding]
+
+    save_image(unknown_id, frame)
+
+def save_image(id, frame):
+    try:
+        path = "unknown_detected_faces/"
+        filename = path + id + '.jpg'
+        result = cv2.imwrite(filename, frame)
+        print("success saving file" + str(result))
+    except Exception as e:
+        print("error saving file" + str(e))
+
 
 for ref_id , embed_list in unknown_face_dictt.items():
         for my_embed in embed_list:
@@ -126,7 +151,7 @@ while True  :
                 if is_not_exist == False:
                     writtenName = ref_dictt[id]
                 else:
-                    store_unknown_person(face_encoding)
+                    store_unknown_person(face_encoding, frame)
                     writtenName = "unknown person"
 
                 cv2.putText(frame, writtenName, (left + 6, bottom - 6), font, 1.0, (255, 255, 255), 1)
